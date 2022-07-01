@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
@@ -24,8 +25,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //Adicionando acesso
                 .antMatchers(HttpMethod.GET, "/topicos").permitAll()
                 .antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth").permitAll()
                 //forma de autienticação
-                .anyRequest().authenticated().and().formLogin();
+                .anyRequest().authenticated().and().
+                //desabilitando a criação de sessão stateless
+                csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
     }
 
 
