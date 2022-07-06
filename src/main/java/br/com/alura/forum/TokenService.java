@@ -1,6 +1,8 @@
 package br.com.alura.forum;
 
 import br.com.alura.forum.modelo.Usuario;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,5 +30,11 @@ public class TokenService {
                 .setExpiration(new Date(date.getTime() + exp))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
+    }
+
+    public Boolean isTokenValido(String token) {
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+        return true;
+
     }
 }
