@@ -1,6 +1,7 @@
 package br.com.alura.forum.security;
 
 import br.com.alura.forum.TokenService;
+import br.com.alura.forum.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private AutenticacaoService autenticacaoService;
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
     TokenService tokenService;
 
     // Configuração de autorização de acesso aos endpoints
@@ -33,11 +37,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/topicos").permitAll()
                 .antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 //forma de autienticação
                 .anyRequest().authenticated().and().
                 //desabilitando a criação de sessão stateless
                 csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(new AutenticaoViaTokenFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new AutenticaoViaTokenFilter(tokenService,usuarioRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
 
